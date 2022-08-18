@@ -1,9 +1,7 @@
-
-
 const api_router = require('express').Router();
 const User = require('../models/User');
 const Thought = require('../models/Thought');
-const reaction = require('../models/Reaction')
+const {reactionSchema} = require('../models/Reaction')
 
 // Create a user
 api_router.post('/users', async (req, res) => {
@@ -59,9 +57,11 @@ api_router.delete('/deleteusers', async (req, res) => {
 // Post friend to a users friend array
 // how to post the userId and friendId without the : being added within the string.
 api_router.post('/users/:userId/friends/:friendId', async (req, res) => {
-    const user_id = req.query.user_id;
+    const user_id = req.params.userId;
+    const friend_id = req.params.friendId;
+        console.log(user_id)
+
     const user = await User.findOne({ _id: user_id });
-    const friend_id = req.params.friendId
     const friend = await User.findOne({_id: friend_id});
     console.log(user)
     console.log(friend)
@@ -88,9 +88,8 @@ api_router.delete('/users/:userId/friends/:friendId', async (req, res) => {
   });
 
 // Post to create new thought
-api_router.post('/thought', async (req, res) => {
-  const user_id = req.query.userId;
-  // const user_id = (req.body.userId)
+api_router.post('/thought/:userId', async (req, res) => {
+  const user_id = req.params.userId;
   const user = await User.findOne({ _id: user_id });
   console.log(user);
   const thought = await Thought.create(req.body);
@@ -106,7 +105,6 @@ api_router.post('/thought', async (req, res) => {
 // Get all thoughts 
 api_router.get('/allThoughts', async (req, res) => {
   const thoughts = await Thought.find()
-  // .populate('thoughts');
 
   res.send(thoughts);
 });
@@ -123,14 +121,13 @@ api_router.get('/thought', async (req, res) => {
 });
 
 // update thought using a put route
-api_router.put('/thought', async (req, res) => {
-  const thought_id = req.query.thought_id;
+api_router.put('/thought/:thoughtId', async (req, res) => {
+  const thought_id = req.params.thoughtId;
   const new_thought = req.body;
-  const thought = await User.findOne({ _id: thought_id });
+  const thought = await Thought.findOne({ _id: thought_id });
 
   await Thought.updateOne(thought, new_thought )
   
-  thought.save()
   res.send(thought);
 
 })
@@ -143,6 +140,31 @@ const thought = await Thought.findOne({ _id: thought_id });
 thought.remove();
 
 res.send('thought deleted');
+});
+
+
+// Post to create new reaction to a thought
+api_router.post('/thought/:thoughtId/reactions', async (req, res) => {
+  const thought_id = req.params.thoughtId;
+  await Thought.findOneAndUpdate(
+    { _id: thought_id },
+    { $addToSet: { reactions: req.body }},
+    { runValidators: true, new: true }
+    );
+  
+  res.send('reaction posted');
+});
+
+// Delete to remove a reaction from a thought
+api_router.delete('/thought/:thoughtId/reactions/:reactionid', async (req, res) => {
+
+  await Thought.findOneAndUpdate(
+    { _id: req.params.thoughtId },
+    { $pull: { reactions: {reactionId: req.params.reactionid}}},
+    { runValidators: true, new: true },
+    )
+
+  res.send('reaction deleted');
 });
 
 

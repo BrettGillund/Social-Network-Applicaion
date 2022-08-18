@@ -1,7 +1,7 @@
 const { Schema, Types } = require('mongoose'); //This may need to be a Schema, model???
 
 const reactionSchema = new Schema({
-    ReactionId: {
+    reactionId: {
         type: Schema.Types.ObjectId,
         default: () => new Types.ObjectId(),
     },
@@ -17,14 +17,13 @@ const reactionSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now, // check out if this is formating the timestamp on query using a getter method - Reference: https://stackoverflow.com/questions/70724966/how-to-use-getter-or-setter-with-mongoose-timestamps
+        default: Date.now,
     },
     },
     {
         toJSON: {
         getters: true,
         },
-        id: false,
     }
 );
 

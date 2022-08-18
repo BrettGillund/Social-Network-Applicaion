@@ -5,28 +5,22 @@ const userSchema = new Schema({
         type: String,
         Unique: true,
         Required: true,
-        Trimmed: true // check if this is what needs to be passed in
+        Trimmed: true
     },
     email: {
         type: String,
         Unique: true,
         Required: true,
-        // VALID EMAIL Must match a valid email address (look into Mongoose's matching validation)
     },
     thoughts: [{
         type: SchemaTypes.ObjectId,
         ref: 'Thought'
     }],
     friends: [{
-        type: SchemaTypes.ObjectId, //need to figure out which type will reference the User model//
-        ref: 'User' //do we need to have a schema reference itself?
+        type: SchemaTypes.ObjectId,
+        ref: 'User' 
     }],
     },
-    // {
-    //     toJSON: {
-    //       virtuals: true,
-    //     },
-    // },
 
 );
 

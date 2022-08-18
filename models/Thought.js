@@ -1,4 +1,5 @@
 const { Schema, model, SchemaTypes } = require('mongoose');
+const reactionSchema = require('./Reaction');
 
 const thoughtSchema = new Schema({
     thoughtText: {
@@ -14,22 +15,13 @@ const thoughtSchema = new Schema({
         type: String,
         Required: true,
     },
-    reactions: [{
-        type: SchemaTypes.ObjectId,
-        ref: 'Reaction' //do we need to have a schema reference itself?
-    }]
+    reactions: [reactionSchema]
     },
     {
         toJSON: {
           virtuals: true,
         },
     }
-    // { // not sure if this getter is necessary. 
-    //     toJSON: {
-    //     getters: true,
-    //     },
-    //     id: false,
-    // }
 );
 
 thoughtSchema.virtual('reactionCount').get(function () {
