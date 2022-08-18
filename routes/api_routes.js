@@ -19,9 +19,8 @@ api_router.get('/allUsers', async (req, res) => {
   });
 
 // Get single user by ID
-// http://localhost:3333/api/user?user_id=62fd83431b4c5f164d689ffd
-api_router.get('/users', async (req, res) => {
-    const user_id = req.query.user_id;
+api_router.get('/users/:userId', async (req, res) => {
+    const user_id = req.params.userId;
     const user = await User.findOne({ _id: user_id });
 
     res.send(user);
@@ -29,10 +28,9 @@ api_router.get('/users', async (req, res) => {
 
 
 // Put route to update user by ID.
-//  http://localhost:3333/api/updateusers?user_id=62fd7525c0c4cec6467e9c4d
 //  pass in { "username": "NEW USER NAME" }
-api_router.put('/updateusers', async (req, res) => {
-    const user_id = req.query.user_id;
+api_router.put('/users/:userId', async (req, res) => {
+    const user_id = req.params.userId;
     const new_username = req.body;
     const user = await User.findOne({ _id: user_id });
 
@@ -44,9 +42,8 @@ api_router.put('/updateusers', async (req, res) => {
 })
 
 // Delete a user by its ID. 
-
-api_router.delete('/deleteusers', async (req, res) => {
-    const user_id = req.query.user_id;
+api_router.delete('/users/:userId', async (req, res) => {
+    const user_id = req.params.userId;
     const user = await User.findOne({ _id: user_id });
     user.remove();
   
@@ -55,7 +52,6 @@ api_router.delete('/deleteusers', async (req, res) => {
 
 
 // Post friend to a users friend array
-// how to post the userId and friendId without the : being added within the string.
 api_router.post('/users/:userId/friends/:friendId', async (req, res) => {
     const user_id = req.params.userId;
     const friend_id = req.params.friendId;
@@ -75,10 +71,10 @@ api_router.post('/users/:userId/friends/:friendId', async (req, res) => {
 
 api_router.delete('/users/:userId/friends/:friendId', async (req, res) => {
     try {
-        const user_id = req.query.user_id;
+        const user_id = req.params.userId;
         const user = await User.findOne({ _id: user_id });
         const friend_id = req.params.friendId
-        user.friends.id(friend_id).remove();
+        user.friends.remove(friend_id);
         user.save();
     } catch (err) {
         console.log(err);
@@ -111,8 +107,8 @@ api_router.get('/allThoughts', async (req, res) => {
 
 
 // Get thought by ID
-api_router.get('/thought', async (req, res) => {
-  const thought_id = req.query.thought_id;
+api_router.get('/thought/:thoughtId', async (req, res) => {
+  const thought_id = req.params.thoughtId;
   const thought = await Thought.findOne({ _id: thought_id });
 
   console.log(thought)
@@ -134,8 +130,8 @@ api_router.put('/thought/:thoughtId', async (req, res) => {
 
 
 // delete by passing in thought_id
-api_router.delete('/thought', async (req, res) => {
-const thought_id = req.query.thought_id;
+api_router.delete('/thought/:thoughtId', async (req, res) => {
+const thought_id = req.params.thoughtId;
 const thought = await Thought.findOne({ _id: thought_id });
 thought.remove();
 
