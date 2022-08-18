@@ -19,7 +19,6 @@ const reactionSchema = new Schema({
         type: Date,
         default: Date.now, // check out if this is formating the timestamp on query using a getter method - Reference: https://stackoverflow.com/questions/70724966/how-to-use-getter-or-setter-with-mongoose-timestamps
     },
-
     },
     {
         toJSON: {

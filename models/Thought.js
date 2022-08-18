@@ -18,7 +18,6 @@ const thoughtSchema = new Schema({
         type: SchemaTypes.ObjectId,
         ref: 'Reaction' //do we need to have a schema reference itself?
     }]
-
     },
     {
         toJSON: {
