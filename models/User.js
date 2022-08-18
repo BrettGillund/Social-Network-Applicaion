@@ -13,10 +13,10 @@ const userSchema = new Schema({
         Required: true,
         // VALID EMAIL Must match a valid email address (look into Mongoose's matching validation)
     },
-    thoughts: {
+    thoughts: [{
         type: SchemaTypes.ObjectId,
-        ref: 'Student'
-    },
+        ref: 'Thought'
+    }],
     friends: [{
         type: SchemaTypes.ObjectId, //need to figure out which type will reference the User model//
         ref: 'User' //do we need to have a schema reference itself?

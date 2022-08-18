@@ -16,7 +16,6 @@ api_router.post('/users', async (req, res) => {
 // Get all users
 api_router.get('/allUsers', async (req, res) => {
     const users = await User.find()
-    // .populate('thoughts');
   
     res.send(users);
   });
@@ -58,49 +57,93 @@ api_router.delete('/deleteusers', async (req, res) => {
 
 
 // Post friend to a users friend array
-
-api_router.post('/addFriend', async (req, res) => {
+// how to post the userId and friendId without the : being added within the string.
+api_router.post('/users/:userId/friends/:friendId', async (req, res) => {
     const user_id = req.query.user_id;
     const user = await User.findOne({ _id: user_id });
-    
-    const friend = req.body;
-    
-    user.friends.push((friend));
+    const friend_id = req.params.friendId
+    const friend = await User.findOne({_id: friend_id});
+    console.log(user)
+    console.log(friend)
+    user.friends.push(friend._id);
     user.save();
-  
-    res.send(user.friends);
-  });
-  
-// api_router.post('/addFriend', async (req, res) => {
-//     const user_id = req.query.user_id;
-// const { username, email } = req.body;
-
-// const user = await User.findOne({ _id: user_id });
-// const newUser = await User.create({
-//     username, email
-// });
-
-// user.friends.push(newUser._id);
-// user.save();
-
-// res.send(user);
-// });
+    res.send(user)
+});
 
 
 // Delete a friend from a users friend array
 
-api_router.delete('/posts', async (req, res) => {
+api_router.delete('/users/:userId/friends/:friendId', async (req, res) => {
     try {
-      const user = await User.findOne({ _id: req.query.user_id });
-      user.posts.id(req.query.post_id).remove();
-      user.save();
+        const user_id = req.query.user_id;
+        const user = await User.findOne({ _id: user_id });
+        const friend_id = req.params.friendId
+        user.friends.id(friend_id).remove();
+        user.save();
     } catch (err) {
-      console.log(err);
+        console.log(err);
     }
   
-    res.send('Post deleted successfully.');
+    res.send('Your friend has been removed. How sad!');
   });
+
+// Post to create new thought
+api_router.post('/thought', async (req, res) => {
+  const user_id = req.query.userId;
+  // const user_id = (req.body.userId)
+  const user = await User.findOne({ _id: user_id });
+  console.log(user);
+  const thought = await Thought.create(req.body);
+
+
+  user.thoughts.push(thought._id);
+  user.save();
+  res.send(thought);
+});
+
+
+
+// Get all thoughts 
+api_router.get('/allThoughts', async (req, res) => {
+  const thoughts = await Thought.find()
+  // .populate('thoughts');
+
+  res.send(thoughts);
+});
+
+
+// Get thought by ID
+api_router.get('/thought', async (req, res) => {
+  const thought_id = req.query.thought_id;
+  const thought = await Thought.findOne({ _id: thought_id });
+
+  console.log(thought)
+
+  res.send(thought);
+});
+
+// update thought using a put route
+api_router.put('/thought', async (req, res) => {
+  const thought_id = req.query.thought_id;
+  const new_thought = req.body;
+  const thought = await User.findOne({ _id: thought_id });
+
+  await Thought.updateOne(thought, new_thought )
+  
+  thought.save()
+  res.send(thought);
+
+})
+
+
+// delete by passing in thought_id
+api_router.delete('/thought', async (req, res) => {
+const thought_id = req.query.thought_id;
+const thought = await Thought.findOne({ _id: thought_id });
+thought.remove();
+
+res.send('thought deleted');
+});
 
 
 module.exports = api_router;  
-
