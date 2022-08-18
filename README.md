@@ -1,9 +1,8 @@
 ## Social Network Application
 
-# Table of Contents
-
-
 # Video Walkthrough of Application
+
+https://drive.google.com/file/d/1ncQ7gxo6HHlG_r9AParCTO71QeXHcXur/view
 
 # About
 
